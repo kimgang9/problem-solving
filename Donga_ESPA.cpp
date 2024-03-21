@@ -1,6 +1,7 @@
-﻿#include <iostream>
+#include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 
 long long plus_n(long long num) {
     int number = 0;
@@ -15,33 +16,39 @@ long long plus_n(long long num) {
 }
 
 int main() {
-    std::ifstream file("3nplus1.inp");
+    std::ifstream file("3nplus1.inp"); // 파일 열기
+    std::ofstream file2("3nplus1.out"); // 파일 출력
     if (!file) {
         std::cout << "파일 오류" << std::endl;
         return 1;
     }
 
-    long long num1, num2, num3, num4;
-    file >> num1 >> num2 >> num3 >> num4;
-    long long f1 = num1; long long f2 = num2; long long f3 = num3; long long f4 = num4;
-    if (num1 > num2)
-        std::swap(num1, num2);
+    std::vector<std::pair<long long, long long>> inputValues;
 
-    if (num3 > num4)
-        std::swap(num3, num4);
+    // 파일에서 입력값을 벡터에 저장
+    long long num1, num2;
+    while (file >> num1 >> num2) {
+        inputValues.push_back(std::make_pair(num1, num2));
+    }
 
-    long long maxnumber1 = 0;
-    long long maxnumber2 = 0;
+    for (const auto& input : inputValues) {
+        long long f1 = input.first;
+        long long f2 = input.second;
+        long long num1 = f1, num2 = f2;
 
-    for (long long i = num1; i <= num2; i++)
-        maxnumber1 = std::max(maxnumber1, plus_n(i));
+        if (num1 > num2)
+            std::swap(num1, num2); // 자리 정렬
 
-    for (long long i = num3; i <= num4; i++)
-        maxnumber2 = std::max(maxnumber2, plus_n(i));
+        long long maxnumber1 = 0;
 
-    std::ofstream file2("3nplus1.out");
-    file2 << f1 << " " << f2 << " " << maxnumber1 + 1 << std::endl;
-    file2 << f3 << " " << f4 << " " << maxnumber2 + 1 << std::endl;
-    
+        for (long long i = num1; i <= num2; i++) // 높은값 저장
+            maxnumber1 = std::max(maxnumber1, plus_n(i));
+
+        file2 << f1 << " " << f2 << " " << maxnumber1 + 1 << std::endl;
+        std::cout << f1 << " " << f2 << " " << maxnumber1 + 1 << std::endl;
+    }
+
+    file.close();
+    file2.close();
     return 0;
 }
